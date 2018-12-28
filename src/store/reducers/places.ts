@@ -1,9 +1,6 @@
+import { DeletePlaceAction } from "./../actions/places";
 import { PlacesActionTypes } from "../actions/actionTypes";
-import {
-  PlacesActions,
-  AddPlaceAction,
-  SelectPlaceAction
-} from "../actions/places";
+import { PlacesActions, AddPlaceAction } from "../actions/places";
 
 export interface Place {
   key: string;
@@ -13,12 +10,10 @@ export interface Place {
 
 export interface PlacesState {
   readonly places: Place[];
-  readonly selectedPlace?: null | Place;
 }
 
 const initialState: PlacesState = {
-  places: [],
-  selectedPlace: null
+  places: []
 };
 
 const addPlace = (state: PlacesState, action: AddPlaceAction) => ({
@@ -32,24 +27,9 @@ const addPlace = (state: PlacesState, action: AddPlaceAction) => ({
   })
 });
 
-const deletePlace = (state: PlacesState) => ({
+const deletePlace = (state: PlacesState, action: DeletePlaceAction) => ({
   ...state,
-  places: state.places.filter(place => {
-    if (state.selectedPlace) {
-      return place.key !== state.selectedPlace.key;
-    }
-  }),
-  selectedPlace: null
-});
-
-const selectedPlace = (state: PlacesState, action: SelectPlaceAction) => ({
-  ...state,
-  selectedPlace: state.places.find(place => place.key === action.key)
-});
-
-const deselectPlace = (state: PlacesState) => ({
-  ...state,
-  selectedPlace: null
+  places: state.places.filter(place => place.key !== action.key)
 });
 
 const reducer = (state = initialState, action: PlacesActions): PlacesState => {
@@ -57,11 +37,7 @@ const reducer = (state = initialState, action: PlacesActions): PlacesState => {
     case PlacesActionTypes.ADD_PLACE:
       return addPlace(state, action);
     case PlacesActionTypes.DELETE_PLACE:
-      return deletePlace(state);
-    case PlacesActionTypes.SELECT_PLACE:
-      return selectedPlace(state, action);
-    case PlacesActionTypes.DESELECT_PLACE:
-      return deselectPlace(state);
+      return deletePlace(state, action);
     default:
       return state;
   }

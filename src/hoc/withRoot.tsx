@@ -4,8 +4,10 @@ import configureStore from "../store/configureStore";
 
 const store = configureStore();
 
-const withRoot = (Component: React.ComponentType) => {
-  return (props: any) => (
+type P = any;
+
+const withRoot = (Component: React.ComponentType<P>) => {
+  return (props: P) => (
     <Provider store={store}>
       <Component {...props} />
     </Provider>
